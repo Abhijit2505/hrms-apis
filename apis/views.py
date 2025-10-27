@@ -20,6 +20,8 @@ class GenerateJDAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         validated = serializer.validated_data
 
+        print( "Validated data:", validated )
+
         payload = validated["payload"]
         word_count = validated.get("word_count", 300)
         tone = validated.get("tone", "Professional")
@@ -49,7 +51,7 @@ class GenerateJDAPIView(APIView):
                 "jd_text": generated_text,
                 "word_count": word_count,
                 "generated_at": timezone.now(),
-                "source": "together_ai",
+                "source": "deepqueryv1.5",
                 "request_id": jd_request.id
             }, status=status.HTTP_200_OK)
 

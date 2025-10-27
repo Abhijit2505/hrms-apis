@@ -34,46 +34,90 @@ def build_prompt(payload: dict, word_count: int = 300, tone: str = "Professional
     )
     return prompt
 
-def call_together_inference(prompt: str, max_tokens: int = 512, temperature: float = 0.2):
+import os
+import json
+import requests
+from typing import List, Dict, Optional
+
+DEFAULT_TIMEOUT = 30
+# TOGETHER_API_KEY = os.environ.get("TOGETHER_API_KEY")
+# # You can set TOGETHER_API_URL to "https://api.together.xyz/v1/chat/completions"
+# # or leave it None and we'll use the canonical endpoint below.
+# TOGETHER_API_URL = os.environ.get("TOGETHER_API_URL") or "https://api.together.xyz/v1/chat/completions"
+
+def call_together_inference(
+    user_prompt: str,
+    model: str = "openai/gpt-oss-20b",
+    max_tokens: int = 512,
+    temperature: float = 0.2,
+    system_prompt: Optional[str] = None,
+    timeout: int = DEFAULT_TIMEOUT,
+) -> str:
     """
-    Generic call to Together AI inference endpoint. Replace request format to match
-    the endpoint's expected JSON if needed.
+    Call Together AI chat/completions (OpenAI-compatible chat endpoint).
+    Returns the assistant text (first choice). Raises RuntimeError on failure with helpful info.
     """
-    if not TOGETHER_API_URL or not TOGETHER_API_KEY:
-        raise RuntimeError("Together API URL or API key not configured. Set TOGETHER_API_URL and TOGETHER_API_KEY.")
+    if not TOGETHER_API_KEY:
+        raise RuntimeError("TOGETHER_API_KEY not configured in environment.")
+
+    # Build messages array per OpenAI-compatible chat format
+    messages: List[Dict[str, str]] = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": user_prompt})
 
     headers = {
         "Authorization": f"Bearer {TOGETHER_API_KEY}",
         "Content-Type": "application/json",
     }
 
-    # Example body — you will likely need to adjust to Together's exact API schema.
     body = {
-        "prompt": prompt,
+        "model": model,
+        "messages": messages,
         "max_tokens": max_tokens,
         "temperature": temperature,
-        # add model, stop sequences, or other provider-specific fields as required
     }
 
-    resp = requests.post(TOGETHER_API_URL, headers=headers, json=body, timeout=DEFAULT_TIMEOUT)
-    resp.raise_for_status()
+    try:
+        resp = requests.post(TOGETHER_API_URL, headers=headers, json=body, timeout=timeout)
+    except requests.RequestException as e:
+        raise RuntimeError(f"Network error calling Together API: {e}") from e
+
+    # Helpful debug for non-2xx responses
+    if resp.status_code >= 400:
+        snippet = resp.text[:1000]  # avoid huge dumps
+        raise RuntimeError(
+            f"Together API returned {resp.status_code}: {resp.reason}. "
+            f"Response body (truncated): {snippet}"
+        )
+
     data = resp.json()
 
-    # The actual response structure depends on Together's API — adjust accordingly.
-    # Here we assume the generated text is in data["text"] or data["output"].
-    if "text" in data:
-        return data["text"]
-    if "output" in data:
-        # e.g., {"output": {"generated_text": "..."}}
-        out = data["output"]
-        if isinstance(out, dict):
-            # look for common keys
-            for key in ("generated_text", "text", "content"):
-                if key in out:
-                    return out[key]
-            # fallback: dump object
-            return json.dumps(out)
-        # or a simple string
-        return str(out)
-    # fallback: stringify
+    # Typical OpenAI-compatible response: choices -> [ { message: { content: "..." } } ]
+    if "choices" in data and isinstance(data["choices"], list) and data["choices"]:
+        choice = data["choices"][0]
+        # new format: choice.message.content
+        if "message" in choice and isinstance(choice["message"], dict):
+            content = choice["message"].get("content")
+            if content:
+                return content
+        # older/alternate: choice.text
+        if "text" in choice and isinstance(choice["text"], str):
+            return choice["text"]
+
+    # Some services return top-level 'output' or 'text'
+    for k in ("text", "output", "generated_text"):
+        if k in data:
+            # output could be dict or string
+            out = data[k]
+            if isinstance(out, str):
+                return out
+            if isinstance(out, dict):
+                # try to find content keys
+                for kk in ("generated_text", "text", "content"):
+                    if kk in out and isinstance(out[kk], str):
+                        return out[kk]
+                return json.dumps(out)
+
+    # Fallback: return full response as JSON string
     return json.dumps(data)

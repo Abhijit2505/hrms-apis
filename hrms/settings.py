@@ -151,13 +151,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 import os
 # settings.py (add)
 # Set these via environment variables in production / docker-compose
-TOGETHER_API_URL = os.getenv("TOGETHER_API_URL", None)
-TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY", None)
+TOGETHER_API_URL = "https://api.together.xyz/v1/chat/completions"
+TOGETHER_API_KEY = "tgp_v1_nlF_x7BqlxWKR-dAGO_TyZL9Gu_60jsM3H5lwDp6wdk"
 
 # REST Framework basics
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
         # other auth classes if needed
     ),
     "DEFAULT_PERMISSION_CLASSES": (
