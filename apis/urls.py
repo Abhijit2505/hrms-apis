@@ -14,7 +14,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="JD Generation API",
         default_version="v1",
-        description="API for generating professional Job Descriptions using Together AI inference engine.",
+        description="API for generating professional Job Descriptions using DeepQuery inference engine.",
         terms_of_service="https://www.termsofservicegenerator.net/live.php?token=GnBU6OpZr7nuXZZH7Sc8Oh5ksAw0ipqX",
         contact=openapi.Contact(email="support@presear.com"),
         license=openapi.License(name="Proprietary"),

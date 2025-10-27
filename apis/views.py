@@ -43,7 +43,7 @@ example_payload = {
 class GenerateJDAPIView(APIView):
     """
     POST /api/jdgen/
-    Generates a professional Job Description (JD) using the Together AI inference engine.
+    Generates a professional Job Description (JD) using the DeepQuery inference engine.
     """
 
     permission_classes = [permissions.IsAuthenticated]  # adjust as needed
