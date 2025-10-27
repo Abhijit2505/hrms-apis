@@ -48,3 +48,4 @@ flake8
 # Rate Limiting (Optional)
 django-ratelimit
 django-tidb~=5.2.0
+pymysql
