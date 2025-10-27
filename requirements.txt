@@ -49,3 +49,4 @@ flake8
 django-ratelimit
 django-tidb~=5.2.0
 pymysql
+django-jazzmin
