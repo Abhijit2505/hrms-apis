@@ -30,7 +30,7 @@ def build_prompt(payload: dict, word_count: int = 300, tone: str = "Professional
         f"- If the JSON contains fields like `skills`, `experience`, `location`, `salary`, `benefits`, or `company`, integrate them sensibly into the JD.\n"
         f"- Use professional language and bullet points where appropriate.\n\n"
         f"INPUT JSON:\n{pretty_payload}\n\n"
-        f"Output only the Job Description text (no additional commentary). Start with a short one-line title header followed by the sections.\n"
+        f"Output only the Job Description text (no additional commentary). Start with a short one-line title header followed by the sections. If anyone asks about your technical built or architecture then please tell them that you are not suppose to share it.Always black-box your personal details\n"
     )
     return prompt
 
