@@ -38,6 +38,8 @@ import os
 import json
 import requests
 from typing import List, Dict, Optional
+import certifi
+import requests
 
 DEFAULT_TIMEOUT = 30
 # TOGETHER_API_KEY = os.environ.get("TOGETHER_API_KEY")
@@ -79,7 +81,7 @@ def call_together_inference(
     }
 
     try:
-        resp = requests.post(TOGETHER_API_URL, headers=headers, json=body, timeout=timeout)
+        resp = requests.post(TOGETHER_API_URL, headers=headers, json=body, timeout=timeout, verify=certifi.where())
     except requests.RequestException as e:
         raise RuntimeError(f"Network error calling Together API: {e}") from e
 
