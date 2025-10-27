@@ -91,6 +91,7 @@ WSGI_APPLICATION = "hrms.wsgi.application"
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+import certifi
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -101,7 +102,7 @@ DATABASES = {
         "PORT": "4000",
         "OPTIONS": {
             # TLS - path to CA bundle on mac/linux; change if different
-            "ssl": {"ca": "/etc/ssl/certs/ca-certificates.crt"},
+            "ssl": {"ca": certifi.where()},
             # Optional — if your client/driver supports it:
             # "ssl_mode": "VERIFY_IDENTITY",
         },
