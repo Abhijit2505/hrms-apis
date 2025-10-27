@@ -1,0 +1,50 @@
+# Core Framework
+Django
+djangorestframework
+
+# Authentication / JWT
+djangorestframework-simplejwt
+
+# HTTP Clients
+requests
+httpx
+
+# Database (PostgreSQL)
+psycopg2-binary
+
+# Cloud Storage (S3)
+boto3
+django-storages
+
+# Deployment / Static Files
+gunicorn
+whitenoise
+
+# API Docs / OpenAPI
+drf-yasg
+
+# Validation & Models (Optional but useful)
+pydantic
+
+# Environment Management
+python-dotenv
+django-environ
+
+# Background Tasks (Optional)
+celery
+redis
+
+# Testing
+pytest
+pytest-django
+coverage
+factory-boy
+
+# Linting & Formatting
+black
+isort
+flake8
+
+# Rate Limiting (Optional)
+django-ratelimit
+django-tidb~=5.2.0
