@@ -141,8 +141,40 @@ class GenerateJDAPIView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+
 class TotalUsageView(APIView):
+    """
+    Retrieve total API usage statistics.
+    Returns the total number of API requests processed by the system.
+    """
+
+    @swagger_auto_schema(
+        operation_summary="Get total API usage",
+        operation_description="""
+        This endpoint retrieves the **total number of API requests** recorded by the system.  
+        It returns a JSON object containing the total request count.
+        """,
+        responses={
+            200: openapi.Response(
+                description="Successful Response",
+                schema=TotalUsageSerializer,
+                examples={
+                    "application/json": {
+                        "id": 1,
+                        "request_count": 472
+                    }
+                },
+            ),
+            404: "Usage record not found",
+        },
+        tags=["Usage Analytics"],
+    )
     def get(self, request):
+        """
+        Handle GET request for total usage statistics.
+        """
         usage = TotalUsage.objects.first()
+        if not usage:
+            return Response({"detail": "Usage record not found"}, status=404)
         serializer = TotalUsageSerializer(usage)
         return Response(serializer.data)
