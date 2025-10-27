@@ -74,7 +74,7 @@ class GenerateJDAPIView(APIView):
             ),
             400: "Validation error (invalid request body)",
             401: "Authentication credentials were not provided or invalid",
-            500: openapi.Response(description="Server error / AI provider error")
+            500: openapi.Response(description="Server error / DeepQuery Engine error")
         },
         tags=["Job Description Generation"],
         operation_id="generateJobDescription",
