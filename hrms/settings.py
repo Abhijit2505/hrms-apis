@@ -101,7 +101,7 @@ DATABASES = {
         "PORT": "4000",
         "OPTIONS": {
             # TLS - path to CA bundle on mac/linux; change if different
-            # "ssl": {"ca": "/etc/ssl/cert.pem"},
+            "ssl": {"ca": "/etc/ssl/certs/ca-certificates.crt"},
             # Optional — if your client/driver supports it:
             # "ssl_mode": "VERIFY_IDENTITY",
         },
