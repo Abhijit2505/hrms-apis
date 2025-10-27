@@ -14,3 +14,9 @@ class JDRequest(models.Model):
 
     def __str__(self):
         return f"JDRequest #{self.id} ({self.status})"
+
+class TotalUsage(models.Model):
+    request_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"Total Usage: {self.request_count} requests"

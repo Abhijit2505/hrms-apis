@@ -1,5 +1,6 @@
 # jdgen/serializers.py
 from rest_framework import serializers
+from .models import TotalUsage
 
 class JDGenerateSerializer(serializers.Serializer):
     """
@@ -17,3 +18,9 @@ class JDResponseSerializer(serializers.Serializer):
     word_count = serializers.IntegerField()
     generated_at = serializers.DateTimeField()
     source = serializers.CharField()
+
+class TotalUsageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TotalUsage
+        fields = ['id', 'request_count']
+        read_only_fields = ['id', 'request_count']
